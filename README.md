@@ -46,6 +46,7 @@ You choose the engine in Settings. **No keys ship with the app.** If you type a 
 Recommendation: stay on MyMemory with an email (50k/day) for now. If quality or quota isn't enough, Google Cloud Translation NMT is the simplest: it's free up to 500k chars/month, and the code is already in `ENGINES.google`. Gemini Flash-Lite is the cheapest LLM route for more natural, polite Tamil.
 
 ## MyMemory details
+- Requests use `onlyprivate=1&mt=1` first, which forces machine translation. MyMemory's public crowd memory sometimes returns unrelated matches for short phrases (for example, “Dear Sir,” came back as “Tamil complaint letter”). If that returns nothing, the app falls back to a normal lookup.
 `translateEngine(text, from, to)` in `app.js` is the only function that calls an API. It currently uses **MyMemory** (`https://api.mymemory.translated.net/get?q=…&langpair=en|ta`), which is free and needs no key:
 - About 500 characters per request. The app splits text by sentence into chunks of ≤450 characters, and the daily counter counts the characters actually sent. Masked numbers shrink to `[n]`, so they use less quota.
 - Free limit is about 5,000 chars/day per IP, or about 50,000 chars/day if an email is set in Settings (the `de=` parameter).

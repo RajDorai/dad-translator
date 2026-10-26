@@ -34,7 +34,11 @@ const ENGINES = {
       url.searchParams.set('langpair', `${from}|${to}`);
       const email = load(LS.email, '');
       if (email) url.searchParams.set('de', email);
+      // Attempt 1 forces machine translation (onlyprivate=1&mt=1) because MyMemory's public crowd memory can return
+      // unrelated matches for short phrases (e.g. "Dear Sir," -> "Tamil complaint letter"). Attempt 2 = normal lookup.
       for (let attempt = 0; attempt < 2; attempt++) {
+        if (attempt === 0) { url.searchParams.set('onlyprivate', '1'); url.searchParams.set('mt', '1'); }
+        else url.searchParams.delete('onlyprivate');
         addUsage(text.length);
         const r = await fetch(url);
         if (r.status === 429) throw new QuotaError('quota');
