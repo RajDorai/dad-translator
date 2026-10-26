@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b3d91">
+<title>Appa Translator</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Translator</h1>
+  <p class="hint">மொழிபெயர்ப்பு · Terjemahan</p>
+</header>
+
+<main>
+  <!-- Daily free quota -->
+  <section id="quota" class="quota" aria-live="polite">
+    <div class="qtop"><span id="qText">Today: 0 / 5,000 free characters</span></div>
+    <div class="qbar"><div id="qFill"></div></div>
+    <div id="qEmailBox" class="qemail">
+      <p><b>Add your email to get 10× more free translation (50,000 characters a day).</b> Only sent to MyMemory, never shown.</p>
+      <div class="qrow"><input id="qEmail" type="email" inputmode="email" placeholder="your@email.com"><button id="qSave" class="small strong">Save</button></div>
+    </div>
+  </section>
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="langs" aria-label="Languages">
+    <label class="lang">
+      <span>From <small>இருந்து · Dari</small></span>
+      <select id="from"></select>
+    </label>
+    <button id="swap" class="swap" aria-label="Swap languages" title="Swap">⇅</button>
+    <label class="lang">
+      <span>To <small>க்கு · Ke</small></span>
+      <select id="to"></select>
+    </label>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button id="tabPara" role="tab" class="tab">📄 Paragraphs<small>பத்திகள் · Perenggan</small></button>
+    <button id="tabQuick" role="tab" class="tab">✏️ Quick<small>சிறியது · Ringkas</small></button>
+  </div>
+
+  <section class="input">
+    <textarea id="src" rows="4" placeholder="Type here… / இங்கே எழுதுங்கள் / Taip di sini"></textarea>
+    <p id="srcInfo" class="srcinfo"></p>
+    <div class="row4">
+      <button id="paste" class="big alt">📥<span>Paste<small>ஒட்டு · Tampal</small></span></button>
+      <button id="speak" class="big alt">🎤<span>Speak<small>பேசு · Cakap</small></span></button>
+      <button id="photo" class="big alt">📷<span>Photo<small>படம் · Gambar</small></span></button>
+      <button id="clear" class="big alt">✖<span>Clear<small>அழி · Padam</small></span></button>
+    </div>
+    <input id="file" type="file" accept="image/*" capture="environment" hidden>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <button id="go" class="big primary">Translate<small>மொழிபெயர் · Terjemah</small></button>
+    <div id="progBox" class="progbox" hidden>
+      <progress id="prog" max="1" value="0"></progress>
+      <p id="progText"></p>
+    </div>
+  </section>
+
+  <!-- Quick mode output -->
+  <section id="outBox" class="output" hidden>
+    <div id="out" class="out" lang="ta"></div>
+    <div class="row3">
+      <button id="play" class="big alt">🔊<span>Play<small>கேள் · Dengar</small></span></button>
+      <button id="copy" class="big alt">📋<span>Copy<small>நகல் · Salin</small></span></button>
+      <button id="share" class="big alt">📤<span>Share<small>பகிர் · Kongsi</small></span></button>
+    </div>
+  </section>
+
+  <!-- Paragraph mode output -->
+  <section id="paraBox" class="parabox" hidden>
+    <div class="row2">
+      <button id="copyAll" class="big primary2">📋<span id="copyAllLbl">Copy all Tamil<small>அனைத்தையும் நகலெடு</small></span></button>
+      <button id="shareAll" class="big primary2">📤<span>Share all<small>அனைத்தையும் பகிர் · Kongsi</small></span></button>
+    </div>
+    <ol id="paras" class="paras"></ol>
+  </section>
+
+  <details class="panel">
+    <summary>🕘 History <small>வரலாறு · Sejarah</small></summary>
+    <ul id="history" class="list"></ul>
+    <button id="clearHist" class="small">Clear history</button>
+  </details>
+
+  <details class="panel">
+    <summary>📖 My words <small>என் சொற்கள் · Perkataan saya</small></summary>
+    <p class="note">Names, medicines, bank or company names to keep as-is, or always translate your way. Leave “Use instead” empty to keep the word unchanged. Numbers, amounts, dates and reference numbers are always kept exactly.</p>
+    <form id="gForm" class="gform">
+      <input id="gTerm" placeholder="Word (e.g. Panadol, Kumar, Maybank)" required>
+      <input id="gRepl" placeholder="Use instead (optional)">
+      <button class="big primary" type="submit">Add word</button>
+    </form>
+    <ul id="glossary" class="list"></ul>
+  </details>
+
+  <details id="settings" class="panel">
+    <summary>⚙️ Settings</summary>
+    <label class="field"><b>Email for MyMemory</b> (raises free limit from 5,000 to 50,000 characters/day)
+      <input id="email" type="email" placeholder="you@example.com">
+    </label>
+    <label class="field">Text size
+      <select id="size"><option value="1">Large</option><option value="1.2">Larger</option><option value="1.4">Largest</option></select>
+    </label>
+    <label class="field">Translation engine
+      <select id="engine"></select>
+    </label>
+    <label class="field" id="keyField" hidden>API key / proxy URL for this engine (stored only on this phone)
+      <input id="engineKey" type="password" autocomplete="off" placeholder="paste key here">
+    </label>
+  </details>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
